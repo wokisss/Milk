@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>🥛 新增收购记录</h2>
+
+<form method='post' style='max-width: 600px; margin: 0 auto;'>
+  {{form.hidden_tag()}}
+  
+  <div class='form-group'>
+    {{form.farmer_id_card.label}}
+    {{form.farmer_id_card(placeholder='请输入牧民身份证号码')}}
+  </div>
+  
+  <div class='form-group'>
+    {{form.price_per_unit.label}}
+    {{form.price_per_unit(placeholder='请输入收购单价（元/公斤）')}}
+  </div>
+  
+  <div class='form-group'>
+    {{form.quantity.label}}
+    {{form.quantity(placeholder='请输入收购数量（公斤）')}}
+  </div>
+  
+  <div class='form-group'>
+    {{form.location.label}}
+    {{form.location(placeholder='请输入收购地点')}}
+  </div>
+  
+  <div class='form-group'>
+    {{form.note.label}}
+    {{form.note(placeholder='请输入备注信息（选填）', rows='3')}}
+  </div>
+  
+  <div class='form-group' style='text-align: center; margin-top: 3rem;'>
+    {{form.submit(class='btn')}}
+    <a href='/purchases' class='btn btn-secondary' style='margin-left: 1rem;'>返回列表</a>
+  </div>
+</form>
+{% endblock %}

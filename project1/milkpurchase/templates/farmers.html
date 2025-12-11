@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>牧民信息</h2>
+<a href='/farmer/new' class='btn'>添加牧民</a>
+
+<table class='table'>
+  <thead>
+    <tr>
+      <th>姓名</th>
+      <th>身份证</th>
+      <th>银行卡号</th>
+      <th>电话</th>
+      <th>地址</th>
+      <th>奶站</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in farmers %}
+    <tr>
+      <td>{{f.name}}</td>
+      <td>{{f.id_card}}</td>
+      <td>{{f.bank_card if f.bank_card else '未填写'}}</td>
+      <td>{{f.phone}}</td>
+      <td>{{f.address}}</td>
+      <td>{{f.milk_station_id}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
