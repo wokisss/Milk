@@ -25,7 +25,7 @@ _initialized = False
 def ensure_initialized():
     global _initialized
     if not _initialized:
-        db.create_all()
+        # db.create_all()
         # 创建默认管理员用户
         if not User.query.filter_by(username='admin').first():
             admin_user = User(username='admin', role='admin')
