@@ -18,21 +18,21 @@ class Announcement(Base):
     __tablename__ = "announcements"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True, nullable=False)
-    content = Column(String, nullable=False)
-    date = Column(String, nullable=False)
+    title = Column(String(255), index=True, nullable=False)
+    content = Column(String(255), nullable=False)
+    date = Column(String(255), nullable=False)
 
 class Acquisition(Base):
     __tablename__ = "acquisitions"
 
     id = Column(Integer, primary_key=True, index=True)
     herdsman_id = Column(Integer, ForeignKey("herdsmen.id"))
-    initial_id = Column(String, nullable=False)
-    weight = Column(String, nullable=False)
+    initial_id = Column(String(255), nullable=False)
+    weight = Column(String(255), nullable=False)
     price = Column(Float, nullable=False)
     total_price = Column(Float, nullable=False)
-    date = Column(String, nullable=False)
-    location = Column(String, nullable=False)
+    date = Column(String(255), nullable=False)
+    location = Column(String(255), nullable=False)
 
     herdsman = relationship("Herdsman")
 
@@ -40,8 +40,8 @@ class Profile(Base):
     __tablename__ = "profiles"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
-    registration_date = Column(String, nullable=False)
-    permissions = Column(String, nullable=False)
+    username = Column(String(255), unique=True, index=True, nullable=False)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    registration_date = Column(String(255), nullable=False)
+    permissions = Column(String(255), nullable=False)
 
