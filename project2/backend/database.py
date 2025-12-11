@@ -10,10 +10,7 @@ from sqlalchemy.orm import sessionmaker
 SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:123456@localhost:3306/smart_milk_chain"
 
 engine = create_engine(
-    DATABASE_URL, 
-    # connect_args 是 SQLite 特有的配置，用于允许多线程访问
-    # FastAPI 是异步框架，可能在后台使用多线程处理请求
-    connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL
 )
 
 # SessionLocal 类将是数据库会话的工厂

@@ -7,13 +7,11 @@ class Herdsman(Base):
     __tablename__ = "herdsmen"
 
     id = Column(Integer, primary_key=True, index=True)
-    id_card = Column(String, unique=True, index=True, nullable=False)
-    name = Column(String, index=True, nullable=False)
-    contact = Column(String, nullable=False)
-    address = Column(String, nullable=False)
-    # 添加在 Herdsman 类中
-    bank_card = Column(String, nullable=True)
-    address = Column(String, nullable=True)
+    id_card = Column(String(255), unique=True, index=True, nullable=False)
+    name = Column(String(255), index=True, nullable=False)
+    phone = Column(String(255), nullable=True)
+    address = Column(String(255), nullable=True)
+    bank_card = Column(String(255), nullable=True)
     milk_station_id = Column(Integer, nullable=True)
 
 class Announcement(Base):
