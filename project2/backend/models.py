@@ -11,6 +11,10 @@ class Herdsman(Base):
     name = Column(String, index=True, nullable=False)
     contact = Column(String, nullable=False)
     address = Column(String, nullable=False)
+    # 添加在 Herdsman 类中
+    bank_card = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    milk_station_id = Column(Integer, nullable=True)
 
 class Announcement(Base):
     __tablename__ = "announcements"

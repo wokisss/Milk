@@ -3,7 +3,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "sqlite:///./milk_regulation.db"
+# 注释掉原来的 SQLite
+# SQLALCHEMY_DATABASE_URL = "sqlite:///./milk_regulation.db"
+
+# 换成 MySQL (格式: mysql+pymysql://用户名:密码@地址:端口/数据库名)
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:123456@localhost:3306/smart_milk_chain"
 
 engine = create_engine(
     DATABASE_URL, 
