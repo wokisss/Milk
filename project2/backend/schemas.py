@@ -26,7 +26,7 @@ class Herdsman(HerdsmanBase):
     class Config:
         # orm_mode = True 告诉 Pydantic 模型从 ORM 对象中读取数据
         # 即使它不是一个字典，也可以直接通过 orm_model.id 的方式访问
-        orm_mode = True
+        from_attributes = True
 
 # --- Announcement Schemas ---
 class AnnouncementBase(BaseModel):
@@ -47,7 +47,7 @@ class Announcement(AnnouncementBase):
     """从数据库读取并返回给客户端的模型"""
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- Acquisition Schemas ---
 class AcquisitionBase(BaseModel):
@@ -72,7 +72,7 @@ class Acquisition(AcquisitionBase):
     """从数据库读取并返回给客户端的模型"""
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- Profile Schemas ---
 class ProfileBase(BaseModel):
@@ -94,7 +94,7 @@ class Profile(ProfileBase):
     """从数据库读取并返回给客户端的模型"""
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- Login Schemas ---
 
