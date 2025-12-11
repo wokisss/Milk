@@ -4,6 +4,8 @@ from models import db, Farmer, Purchase, User
 from forms import FarmerForm, PurchaseForm, LoginForm
 from decimal import Decimal
 from functools import wraps
+import uuid
+from datetime import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -25,7 +27,7 @@ _initialized = False
 def ensure_initialized():
     global _initialized
     if not _initialized:
-        # db.create_all()
+        # db.create_all() # 已禁用，因为表结构由 Project 2 管理
         # 创建默认管理员用户
         if not User.query.filter_by(username='admin').first():
             admin_user = User(username='admin', role='admin')
@@ -87,8 +89,8 @@ def new_farmer():
 @login_required
 def view_farmer(farmer_id):
     farmer = Farmer.query.get_or_404(farmer_id)
-    # 获取该牧民的所有收购记录，按时间倒序排列
-    purchases = Purchase.query.filter_by(farmer_id=farmer.id).order_by(Purchase.created_at.desc()).all()
+    # 使用新的外键 herdsman_id 查询，并按日期倒序
+    purchases = Purchase.query.filter_by(herdsman_id=farmer.id).order_by(Purchase.date.desc()).all()
     return render_template('farmer_view.html', farmer=farmer, purchases=purchases)
 
 @app.route('/farmer/edit/<int:farmer_id>', methods=['GET','POST'])
@@ -116,7 +118,7 @@ def delete_farmer(farmer_id):
     farmer = Farmer.query.get_or_404(farmer_id)
     
     # 检查是否有关联的收购记录
-    if Purchase.query.filter_by(farmer_id=farmer.id).first():
+    if Purchase.query.filter_by(herdsman_id=farmer.id).first():
         flash('该牧民有关联的收购记录，无法删除', 'danger')
         return redirect(url_for('farmers_list'))
     
@@ -140,10 +142,21 @@ def new_purchase():
         if not farmer:
             flash('未找到对应牧民', 'danger')
             return redirect(url_for('new_purchase'))
+        
         qty = Decimal(form.quantity.data)
-        price = Decimal(form.price_per_unit.data)
-        total = qty * price
-        p = Purchase(farmer_id=farmer.id, price_per_unit=price, quantity=qty, total_price=total, location=form.location.data, note=form.note.data)
+        price_val = Decimal(form.price_per_unit.data)
+        total = qty * price_val
+        
+        # 创建符合 Project 2 acquisitions 表结构的 Purchase 对象
+        p = Purchase(
+            herdsman_id=farmer.id,
+            initial_id=str(uuid.uuid4()),
+            weight=str(qty),
+            price=float(price_val),
+            total_price=float(total),
+            date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            location=form.location.data
+        )
         db.session.add(p)
         db.session.commit()
         flash('收购记录已保存', 'success')
@@ -163,12 +176,12 @@ def edit_purchase(purchase_id):
     form = PurchaseForm()
     
     if request.method == 'GET':
-        # 预填充表单数据
+        # 预填充表单数据，使用新字段
         form.farmer_id_card.data = purchase.farmer.id_card
-        form.price_per_unit.data = purchase.price_per_unit
-        form.quantity.data = purchase.quantity
+        form.price_per_unit.data = Decimal(str(purchase.price))
+        form.quantity.data = Decimal(purchase.weight)
         form.location.data = purchase.location
-        form.note.data = purchase.note
+        form.note.data = "" # Note 字段不再使用
     
     if form.validate_on_submit():
         farmer = Farmer.query.filter_by(id_card=form.farmer_id_card.data).first()
@@ -177,15 +190,18 @@ def edit_purchase(purchase_id):
             return redirect(url_for('edit_purchase', purchase_id=purchase_id))
         
         qty = Decimal(form.quantity.data)
-        price = Decimal(form.price_per_unit.data)
-        total = qty * price
+        price_val = Decimal(form.price_per_unit.data)
+        total = qty * price_val
         
-        purchase.farmer_id = farmer.id
-        purchase.price_per_unit = price
-        purchase.quantity = qty
-        purchase.total_price = total
+        # 更新 purchase 对象以符合新模型
+        purchase.herdsman_id = farmer.id
+        purchase.price = float(price_val)
+        purchase.weight = str(qty)
+        purchase.total_price = float(total)
         purchase.location = form.location.data
-        purchase.note = form.note.data
+        # 'date' 字段在编辑时通常不更新，保持创建时的时间
+        # 'initial_id' 也不应改变
+        
         db.session.commit()
         flash('收购记录已更新', 'success')
         return redirect(url_for('purchases_list'))
