@@ -10,8 +10,8 @@ from starlette.middleware.cors import CORSMiddleware
 import uvicorn
 
 # 导入本地模块
-from . import crud, models, schemas
-from .database import SessionLocal, engine
+import crud, models, schemas
+from database import SessionLocal, engine
 
 
 # --- 1. 初始化 FastAPI 应用 ---
