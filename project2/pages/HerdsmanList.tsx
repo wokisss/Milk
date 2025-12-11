@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDebounce } from 'use-debounce';
 import { api } from '../services/api';
-import { Herdsman } from '../types';
+import { Herdsman, AcquisitionCreate } from '../types';
 import Modal from '../components/Modal';
 
 type HerdsmanFormData = Omit<Herdsman, 'id'>;
+type AcquisitionFormData = Omit<AcquisitionCreate, 'herdsman_id' | 'initial_id'>;
 
 const emptyHerdsman: HerdsmanFormData = {
   id_card: '',
@@ -12,6 +13,15 @@ const emptyHerdsman: HerdsmanFormData = {
   contact: '',
   address: '',
 };
+
+const emptyAcquisition: AcquisitionFormData = {
+    weight: '',
+    price: 0,
+    date: new Date().toISOString().split('T')[0],
+    location: '',
+    total_price: 0
+};
+
 
 const HerdsmanList: React.FC = () => {
   const [herdsmen, setHerdsmen] = useState<Herdsman[]>([]);
@@ -24,9 +34,39 @@ const HerdsmanList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isViewModalOpen, setViewModalOpen] = useState(false);
+  const [isAcquisitionModalOpen, setAcquisitionModalOpen] = useState(false);
   
   const [editingHerdsman, setEditingHerdsman] = useState<Partial<Herdsman> | null>(null);
-  
+  const [acquisitionFormData, setAcquisitionFormData] = useState<AcquisitionFormData>(emptyAcquisition);
+
+  const handleAcquisitionFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAcquisitionFormData({
+      ...acquisitionFormData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleAcquisitionSave = async () => {
+    if (!editingHerdsman || !('id' in editingHerdsman)) return;
+
+    const data: AcquisitionCreate = {
+      ...acquisitionFormData,
+      herdsman_id: editingHerdsman.id!,
+      initial_id: '12011251723', // This seems to be a hardcoded value
+      weight: `${acquisitionFormData.weight}kg`,
+    };
+
+    setLoading(true);
+    try {
+      await api.createAcquisition(data);
+      closeModal();
+    } catch (err) {
+      alert(`保存失败: ${'请检查输入或网络连接。'}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchData = useCallback(async (search: string) => {
     setLoading(true);
     setError(null);
@@ -64,9 +104,16 @@ const HerdsmanList: React.FC = () => {
     setDeleteModalOpen(true);
   };
 
+  const openAcquisitionModal = (herdsman: Herdsman) => {
+    setEditingHerdsman(herdsman);
+    setAcquisitionModalOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setViewModalOpen(false)
+    setDeleteModalOpen(false);
+    setAcquisitionModalOpen(false);
     setEditingHerdsman(null);
   };
   
@@ -180,6 +227,7 @@ const HerdsmanList: React.FC = () => {
                     <button onClick={() => openEditModal(item)} className="text-blue-600 hover:underline">编辑</button>
                     <button onClick={() => openViewModal(item)} className="text-blue-600 hover:underline">查看</button>
                     <button onClick={() => openDeleteModal(item)} className="text-red-600 hover:underline">删除</button>
+                    <button onClick={() => openAcquisitionModal(item)} className="text-green-600 hover:underline">添加收购</button>
                   </td>
                 </tr>
               ))
@@ -275,6 +323,41 @@ const HerdsmanList: React.FC = () => {
             </div>
             <p className="text-gray-700">确定要删除牧民 <strong>"{editingHerdsman?.name}"</strong> 的信息吗？此操作无法撤销。</p>
         </div>
+      </Modal>
+
+      <Modal
+        isOpen={isAcquisitionModalOpen}
+        onClose={closeModal}
+        title={`为 ${editingHerdsman?.name} 添加收购记录`}
+        footer={
+          <>
+            <button onClick={closeModal} className="px-6 py-2 border rounded text-gray-700 hover:bg-gray-100 text-sm">取消</button>
+            <button onClick={handleAcquisitionSave} className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm" disabled={loading}>
+              {loading ? '保存中...' : '保存'}
+            </button>
+          </>
+        }
+      >
+        <form className="space-y-4 pt-4">
+          <div className="grid grid-cols-1 gap-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">*鲜奶重量 (kg):</label>
+              <input name="weight" value={acquisitionFormData.weight} onChange={handleAcquisitionFormChange} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">*收购单价 (元/kg):</label>
+              <input name="price" type="number" value={acquisitionFormData.price} onChange={handleAcquisitionFormChange} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">*收购地点:</label>
+              <input name="location" value={acquisitionFormData.location} onChange={handleAcquisitionFormChange} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">*收购日期:</label>
+              <input name="date" type="date" value={acquisitionFormData.date} onChange={handleAcquisitionFormChange} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+          </div>
+        </form>
       </Modal>
     </div>
   );

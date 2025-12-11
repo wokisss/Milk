@@ -1,7 +1,30 @@
-# backend/crud.py
 from sqlalchemy.orm import Session
+from sqlalchemy import func, Float
+from datetime import datetime
 import models, schemas
 from typing import Optional
+
+def get_stats(db: Session):
+    """从数据库计算统计数据"""
+    
+    # 获取当前日期，并格式化为 "YYYY.M.D"
+    today_str = datetime.now().strftime("%Y.%-m.%-d")
+
+    # 计算总收购量
+    # 注意：weight 存储为 "10kg" 格式的字符串，需要先去除 "kg" 并转换为浮点数
+    total_weight_query = db.query(func.sum(func.cast(func.replace(models.Acquisition.weight, 'kg', ''), Float)))
+    total_weight_result = total_weight_query.scalar()
+    
+    # 计算当日收购量
+    daily_weight_query = db.query(func.sum(func.cast(func.replace(models.Acquisition.weight, 'kg', ''), Float))).filter(models.Acquisition.date == today_str)
+    daily_weight_result = daily_weight_query.scalar()
+
+    # 准备返回的统计数据
+    return {
+        "date": today_str,
+        "daily_weight": f"{daily_weight_result or 0}kg",
+        "total_weight": f"{total_weight_result or 0}kg"
+    }
 
 # --- Herdsman CRUD ---
 
@@ -113,7 +136,13 @@ def get_acquisitions(db: Session, skip: int = 0, limit: int = 100):
 
 def create_acquisition(db: Session, acquisition: schemas.AcquisitionCreate):
     """创建一个新的收购记录"""
-    db_acquisition = models.Acquisition(**acquisition.dict())
+    acquisition_data = acquisition.dict()
+    weight_str = acquisition_data.get("weight", "0kg").replace('kg', '')
+    weight_float = float(weight_str)
+    price = acquisition_data.get("price", 0)
+    acquisition_data["total_price"] = weight_float * price
+    
+    db_acquisition = models.Acquisition(**acquisition_data)
     db.add(db_acquisition)
     db.commit()
     db.refresh(db_acquisition)
@@ -139,6 +168,33 @@ def delete_acquisition(db: Session, acquisition_id: int):
         db.delete(db_acquisition)
         db.commit()
     return db_acquisition
+
+
+from sqlalchemy import func
+from datetime import datetime
+
+def get_stats(db: Session):
+    """从数据库计算统计数据"""
+    
+    # 获取当前日期，并格式化为 "YYYY.M.D"
+    today_str = datetime.now().strftime("%Y.%-m.%-d")
+
+    # 计算总收购量
+    # 注意：weight 存储为 "10kg" 格式的字符串，需要先去除 "kg" 并转换为浮点数
+    total_weight_query = db.query(func.sum(func.cast(func.replace(models.Acquisition.weight, 'kg', ''), Float)))
+    total_weight_result = total_weight_query.scalar()
+    
+    # 计算当日收购量
+    daily_weight_query = db.query(func.sum(func.cast(func.replace(models.Acquisition.weight, 'kg', ''), Float))).filter(models.Acquisition.date == today_str)
+    daily_weight_result = daily_weight_query.scalar()
+
+    # 准备返回的统计数据
+    return {
+        "date": today_str,
+        "daily_weight": f"{daily_weight_result or 0}kg",
+        "total_weight": f"{total_weight_result or 0}kg"
+    }
+
 
 # --- Profile CRUD ---
 

@@ -124,13 +124,9 @@ def login(login_request: schemas.LoginRequest):
     raise HTTPException(status_code=401, detail="用户名或密码不能为空")
 
 @router.get("/stats", response_model=schemas.Stats)
-def get_stats():
-    """获取当前的统计数据 (模拟)"""
-    return {
-        "date": "2025.11.1",
-        "daily_weight": "50kg",
-        "total_weight": "250kg"
-    }
+def get_stats(db: Session = Depends(get_db)):
+    """获取当前的统计数据"""
+    return crud.get_stats(db)
 
 # --- Profile Endpoints ---
 @router.get("/profile/{username}", response_model=schemas.Profile)
