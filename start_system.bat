@@ -4,7 +4,7 @@ ECHO Starting all services...
 REM Start Project 2 Backend (FastAPI)
 ECHO Starting Project 2 Backend (FastAPI) on port 8000
 cd project2/backend
-start cmd /k "pip install -r ../../requirements-project2.txt && uvicorn main:app --reload --port 8000"
+start cmd /k "python -m pip install -r ../../requirements-project2.txt && python -m uvicorn main:app --reload --port 8000"
 cd ../..
 
 REM Start Project 2 Frontend
@@ -16,7 +16,7 @@ cd ..
 REM Start Project 1 Backend (Flask)
 ECHO Starting Project 1 Backend (Flask) on port 5000
 cd project1/milkpurchase
-start cmd /k "pip install -r ../../requirements-project1.txt && python app.py"
+start cmd /k "python -m pip install -r ../../requirements-project1.txt && python app.py"
 cd ../..
 
 REM Start Project 3 Backend (Node.js)
