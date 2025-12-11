@@ -21,7 +21,7 @@
          </view>
       </view>
       
-      <!-- 地区选择：用微信原生picker组件（底部弹出列表） -->
+      <!-- 地区选择 -->
       <picker 
         mode="selector" 
         :range="provinces" 
@@ -50,7 +50,7 @@
 
       <!-- 无数据提示 -->
       <view v-if="filteredProducts.length === 0" class="status-tip">
-        <image src="https://via.placeholder.com/120x120?text=空" mode="aspectFit" class="empty-img" />
+        <image src="/static/img/empty.png" mode="aspectFit" class="empty-img" />
         <text class="empty-text">暂无匹配的产品~</text>
       </view>
     </view>
@@ -59,8 +59,9 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 
-// 所有省份列表（可根据需要扩展）
+// 所有省份列表
 const provinces = ref([
   '全部', '北京', '天津', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江',
   '上海', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南',
@@ -68,29 +69,53 @@ const provinces = ref([
   '宁夏', '新疆', '台湾', '香港', '澳门'
 ]);
 
-// 本地模拟产品数据
-const localProducts = ref([
-  { product_name: "牦牛牛奶", product_img: "/static/img/product/1.jpg", province: "四川" },
-  { product_name: "牦牛牛奶", product_img: "/static/img/product/2.jpg", province: "四川" },
-  { product_name: "有机牛奶", product_img: "/static/img/product/3.jpg", province: "内蒙古" },
-  { product_name: "高原牛奶", product_img: "/static/img/product/4.jpg", province: "青海" }
-]);
+// 产品数据，初始为空数组
+const localProducts = ref([]);
 
-// 响应式数据：选中的省份索引（用于picker组件）
-const provinceIndex = ref(provinces.value.findIndex(p => p === '四川'));
-const selectedProvince = ref('四川');
+// 获取产品数据的函数
+const fetchProducts = () => {
+  uni.showLoading({ title: '加载中...' });
+  uni.request({
+    url: 'http://localhost:3001/api/product/list',
+    method: 'GET',
+    success: (res) => {
+      if (res.data.success) {
+        localProducts.value = res.data.data;
+      } else {
+        uni.showToast({ title: res.data.message || '获取产品失败', icon: 'none' });
+      }
+    },
+    fail: (err) => {
+      uni.showToast({ title: '网络请求失败', icon: 'none' });
+      console.error(err);
+    },
+    complete: () => {
+        uni.hideLoading();
+    }
+  });
+};
+
+// 在页面显示时调用 fetchProducts
+onShow(() => {
+  fetchProducts();
+});
+
+
+// 响应式数据
+const provinceIndex = ref(0); // 默认“全部”
+const selectedProvince = ref('全部');
 const searchKeyword = ref('');
 
 // 筛选产品
 const filteredProducts = computed(() => {
   return localProducts.value.filter(item => {
-    const provinceMatch = selectedProvince.value === '全部' || item.province.trim() === selectedProvince.value.trim();
+    const provinceMatch = selectedProvince.value === '全部' || (item.province && item.province.trim() === selectedProvince.value.trim());
     const keywordMatch = item.product_name.toLowerCase().includes(searchKeyword.value.trim().toLowerCase());
     return provinceMatch && keywordMatch;
   });
 });
 
-// 省份选择变化（picker组件回调）
+// 省份选择变化
 const onProvinceChange = (e) => {
   const index = e.detail.value;
   provinceIndex.value = index;
@@ -99,7 +124,8 @@ const onProvinceChange = (e) => {
 
 // 搜索功能
 const handleSearch = () => {
-  uni.showToast({ title: `搜索：${searchKeyword.value}`, icon: 'none' });
+  // 搜索逻辑已通过 computed 属性实现，此函数可用于触发提示
+  uni.showToast({ title: `开始在"${selectedProvince.value}"搜索`, icon: 'none' });
 };
 
 // 图片加载失败容错
@@ -145,7 +171,6 @@ const handleScan = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* 确保导航栏不被挤压 */
   flex-wrap: nowrap;
 }
 
@@ -153,7 +178,6 @@ const handleScan = () => {
   font-size: 32rpx;
   cursor: pointer;
   padding: 8rpx;
-  /* 固定菜单按钮宽度 */
   width: 48rpx;
   text-align: center;
 }
@@ -166,13 +190,10 @@ const handleScan = () => {
   border-radius: 40rpx;
   padding: 8rpx 16rpx;
   margin: 0 16rpx;
-  /* 关键：最小宽度，避免搜索栏被压缩 */
   min-width: 250rpx;
-  /* 强制不换行 */
   white-space: nowrap;
 }
 
-/* 关键修改：输入框不允许溢出，图标优先显示 */
 .search-input {
   border: none;
   outline: none;
@@ -180,7 +201,6 @@ const handleScan = () => {
   font-size: 24rpx;
   color: #333;
   padding: 4rpx 0;
-  /* 输入框内容溢出时隐藏，优先保证图标显示 */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -189,25 +209,20 @@ const handleScan = () => {
 .icon-img {
   width: 36rpx;
   height: 36rpx;
-  /* 图标强制显示，不被压缩 */
   flex-shrink: 0;
 }
 
 .search-icon {
-  /* 搜索图标强制显示，不被压缩 */
   flex-shrink: 0;
 }
 
 .scan-icon {
   margin-left: 16rpx;
-  /* 扫码图标强制显示，不被压缩 */
   flex-shrink: 0;
 }
 
-/* 地区选择：picker组件样式（覆盖默认样式） */
 .location-picker {
   width: auto;
-  /* 固定地区选择宽度，避免挤压搜索栏 */
   min-width: 120rpx;
   flex-shrink: 0;
 }
@@ -223,7 +238,6 @@ const handleScan = () => {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* 推荐区域 */
 .recommend-section {
   padding: 24rpx 16rpx;
   flex: 1;
@@ -240,7 +254,6 @@ const handleScan = () => {
   display: inline-block;
 }
 
-/* 产品网格 */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -279,7 +292,6 @@ const handleScan = () => {
   color: #999;
 }
 
-/* 无数据提示 */
 .status-tip {
   text-align: center;
   margin-top: 120rpx;
@@ -298,15 +310,5 @@ const handleScan = () => {
 .empty-text {
   font-size: 24rpx;
   color: #999;
-}
-
-/* 适配 */
-@media (min-width: 750rpx) {
-  .product-grid {
-    gap: 30rpx;
-  }
-  .product-img {
-    height: 280rpx;
-  }
 }
 </style>

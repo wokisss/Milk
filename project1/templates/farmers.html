@@ -16,18 +16,18 @@
     </tr>
   </thead>
   <tbody>
-    {% for f in farmers %}
+    {% for h in herdsmen %}
     <tr>
-      <td>{{f.name}}</td>
-      <td>{{f.id_card}}</td>
-      <td>{{f.bank_card if f.bank_card else '未填写'}}</td>
-      <td>{{f.phone}}</td>
-      <td>{{f.address}}</td>
-      <td>{{f.milk_station_id}}</td>
+      <td>{{h.name}}</td>
+      <td>{{h.id_card}}</td>
+      <td>{{h.bank_card if h.bank_card else '未填写'}}</td>
+      <td>{{h.phone}}</td>
+      <td>{{h.address}}</td>
+      <td>{{h.milk_station_id}}</td>
       <td>
-        <a href='/farmer/view/{{f.id}}' class='btn btn-sm btn-info'>查看</a>
-        <a href='/farmer/edit/{{f.id}}' class='btn btn-sm btn-primary'>编辑</a>
-        <form method='post' action='/farmer/delete/{{f.id}}' style='display:inline;' onsubmit="return confirm('确定要删除这个牧民吗？')">
+        <a href='/farmer/view/{{h.id}}' class='btn btn-sm btn-info'>查看</a>
+        <a href='/farmer/edit/{{h.id}}' class='btn btn-sm btn-primary'>编辑</a>
+        <form method='post' action='/farmer/delete/{{h.id}}' style='display:inline;' onsubmit="return confirm('确定要删除这个牧民吗？')">
           <button type='submit' class='btn btn-sm btn-danger'>删除</button>
         </form>
       </td>

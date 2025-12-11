@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session
 from config import Config
-from models import db, Farmer, Purchase, User
+from models import db, Herdsman, Acquisition, User
 from forms import FarmerForm, PurchaseForm, LoginForm
 from decimal import Decimal
 from functools import wraps
@@ -20,21 +20,15 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# 标志变量，用于确保初始化只执行一次
-_initialized = False
-
 @app.before_request
 def ensure_initialized():
-    global _initialized
-    if not _initialized:
-        # db.create_all() # 已禁用，因为表结构由 Project 2 管理
-        # 创建默认管理员用户
+    with app.app_context():
+        # db.create_all() 已被移除，因为表结构由Project 2管理
         if not User.query.filter_by(username='admin').first():
             admin_user = User(username='admin', role='admin')
             admin_user.set_password('admin123')
             db.session.add(admin_user)
             db.session.commit()
-        _initialized = True
 
 @app.route('/')
 def index():
@@ -46,7 +40,6 @@ def index():
 def login():
     if 'user_id' in session:
         return redirect(url_for('index'))
-    
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -69,17 +62,17 @@ def logout():
 @app.route('/farmers')
 @login_required
 def farmers_list():
-    farmers = Farmer.query.all()
-    return render_template('farmers.html', farmers=farmers)
+    herdsmen = Herdsman.query.all()
+    return render_template('farmers.html', herdsmen=herdsmen)
 
 @app.route('/farmer/new', methods=['GET','POST'])
 @login_required
 def new_farmer():
     form = FarmerForm()
     if form.validate_on_submit():
-        f = Farmer(name=form.name.data, id_card=form.id_card.data, bank_card=form.bank_card.data,
+        h = Herdsman(name=form.name.data, id_card=form.id_card.data, bank_card=form.bank_card.data,
                    address=form.address.data, phone=form.phone.data, milk_station_id=form.milk_station_id.data)
-        db.session.add(f)
+        db.session.add(h)
         db.session.commit()
         flash('已添加牧民', 'success')
         return redirect(url_for('farmers_list'))
@@ -88,41 +81,35 @@ def new_farmer():
 @app.route('/farmer/view/<int:farmer_id>')
 @login_required
 def view_farmer(farmer_id):
-    farmer = Farmer.query.get_or_404(farmer_id)
-    # 使用新的外键 herdsman_id 查询，并按日期倒序
-    purchases = Purchase.query.filter_by(herdsman_id=farmer.id).order_by(Purchase.date.desc()).all()
-    return render_template('farmer_view.html', farmer=farmer, purchases=purchases)
+    herdsman = Herdsman.query.get_or_404(farmer_id)
+    purchases = Acquisition.query.filter_by(herdsman_id=herdsman.id).order_by(Acquisition.date.desc()).all()
+    return render_template('farmer_view.html', farmer=herdsman, purchases=purchases)
 
 @app.route('/farmer/edit/<int:farmer_id>', methods=['GET','POST'])
 @login_required
 def edit_farmer(farmer_id):
-    farmer = Farmer.query.get_or_404(farmer_id)
-    form = FarmerForm(obj=farmer)
-    
+    herdsman = Herdsman.query.get_or_404(farmer_id)
+    form = FarmerForm(obj=herdsman)
     if form.validate_on_submit():
-        farmer.name = form.name.data
-        farmer.id_card = form.id_card.data
-        farmer.bank_card = form.bank_card.data
-        farmer.address = form.address.data
-        farmer.phone = form.phone.data
-        farmer.milk_station_id = form.milk_station_id.data
+        herdsman.name = form.name.data
+        herdsman.id_card = form.id_card.data
+        herdsman.bank_card = form.bank_card.data
+        herdsman.address = form.address.data
+        herdsman.phone = form.phone.data
+        herdsman.milk_station_id = form.milk_station_id.data
         db.session.commit()
         flash('牧民信息已更新', 'success')
         return redirect(url_for('farmers_list'))
-    
-    return render_template('farmer_form.html', form=form, farmer=farmer)
+    return render_template('farmer_form.html', form=form, farmer=herdsman)
 
 @app.route('/farmer/delete/<int:farmer_id>', methods=['POST'])
 @login_required
 def delete_farmer(farmer_id):
-    farmer = Farmer.query.get_or_404(farmer_id)
-    
-    # 检查是否有关联的收购记录
-    if Purchase.query.filter_by(herdsman_id=farmer.id).first():
+    herdsman = Herdsman.query.get_or_404(farmer_id)
+    if Acquisition.query.filter_by(herdsman_id=herdsman.id).first():
         flash('该牧民有关联的收购记录，无法删除', 'danger')
         return redirect(url_for('farmers_list'))
-    
-    db.session.delete(farmer)
+    db.session.delete(herdsman)
     db.session.commit()
     flash('牧民已删除', 'success')
     return redirect(url_for('farmers_list'))
@@ -130,7 +117,7 @@ def delete_farmer(farmer_id):
 @app.route('/purchases')
 @login_required
 def purchases_list():
-    purchases = Purchase.query.all()
+    purchases = Acquisition.query.order_by(Acquisition.date.desc()).all()
     return render_template('purchases.html', purchases=purchases)
 
 @app.route('/purchase/new', methods=['GET','POST'])
@@ -138,26 +125,22 @@ def purchases_list():
 def new_purchase():
     form = PurchaseForm()
     if form.validate_on_submit():
-        farmer = Farmer.query.filter_by(id_card=form.farmer_id_card.data).first()
-        if not farmer:
+        herdsman = Herdsman.query.filter_by(id_card=form.farmer_id_card.data).first()
+        if not herdsman:
             flash('未找到对应牧民', 'danger')
             return redirect(url_for('new_purchase'))
-        
         qty = Decimal(form.quantity.data)
         price_val = Decimal(form.price_per_unit.data)
         total = qty * price_val
-        
-        # 创建符合 Project 2 acquisitions 表结构的 Purchase 对象
-        p = Purchase(
-            herdsman_id=farmer.id,
-            initial_id=str(uuid.uuid4()),
+        a = Acquisition(
+            herdsman_id=herdsman.id,
+            initial_id=str(uuid.uuid4())[:8],
             weight=str(qty),
             price=float(price_val),
             total_price=float(total),
             date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            location=form.location.data
-        )
-        db.session.add(p)
+            location=form.location.data)
+        db.session.add(a)
         db.session.commit()
         flash('收购记录已保存', 'success')
         return redirect(url_for('purchases_list'))
@@ -166,52 +149,43 @@ def new_purchase():
 @app.route('/purchase/view/<int:purchase_id>')
 @login_required
 def view_purchase(purchase_id):
-    purchase = Purchase.query.get_or_404(purchase_id)
+    purchase = Acquisition.query.get_or_404(purchase_id)
     return render_template('purchase_view.html', purchase=purchase)
 
 @app.route('/purchase/edit/<int:purchase_id>', methods=['GET','POST'])
 @login_required
 def edit_purchase(purchase_id):
-    purchase = Purchase.query.get_or_404(purchase_id)
+    purchase = Acquisition.query.get_or_404(purchase_id)
     form = PurchaseForm()
-    
     if request.method == 'GET':
-        # 预填充表单数据，使用新字段
-        form.farmer_id_card.data = purchase.farmer.id_card
+        form.farmer_id_card.data = purchase.herdsman.id_card
         form.price_per_unit.data = Decimal(str(purchase.price))
         form.quantity.data = Decimal(purchase.weight)
         form.location.data = purchase.location
-        form.note.data = "" # Note 字段不再使用
-    
+        # note 字段已不存在
     if form.validate_on_submit():
-        farmer = Farmer.query.filter_by(id_card=form.farmer_id_card.data).first()
-        if not farmer:
+        herdsman = Herdsman.query.filter_by(id_card=form.farmer_id_card.data).first()
+        if not herdsman:
             flash('未找到对应牧民', 'danger')
             return redirect(url_for('edit_purchase', purchase_id=purchase_id))
-        
         qty = Decimal(form.quantity.data)
         price_val = Decimal(form.price_per_unit.data)
         total = qty * price_val
-        
-        # 更新 purchase 对象以符合新模型
-        purchase.herdsman_id = farmer.id
+        purchase.herdsman_id = herdsman.id
         purchase.price = float(price_val)
         purchase.weight = str(qty)
         purchase.total_price = float(total)
         purchase.location = form.location.data
-        # 'date' 字段在编辑时通常不更新，保持创建时的时间
-        # 'initial_id' 也不应改变
-        
+        # date 和 initial_id 在编辑时不应更改
         db.session.commit()
         flash('收购记录已更新', 'success')
         return redirect(url_for('purchases_list'))
-    
     return render_template('purchase_form.html', form=form, purchase=purchase)
 
 @app.route('/purchase/delete/<int:purchase_id>', methods=['POST'])
 @login_required
 def delete_purchase(purchase_id):
-    purchase = Purchase.query.get_or_404(purchase_id)
+    purchase = Acquisition.query.get_or_404(purchase_id)
     db.session.delete(purchase)
     db.session.commit()
     flash('收购记录已删除', 'success')

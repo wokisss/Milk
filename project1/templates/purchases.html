@@ -19,13 +19,13 @@
   <tbody>
     {% for p in purchases %}
     <tr>
-      <td>{{p.farmer.name}}</td>
-      <td>{{p.farmer.id_card}}</td>
-      <td>{{p.quantity}} kg</td>
-      <td>¥{{p.price_per_unit}}</td>
+      <td>{{p.herdsman.name}}</td>
+      <td>{{p.herdsman.id_card}}</td>
+      <td>{{p.weight}} kg</td>
+      <td>¥{{p.price}}</td>
       <td>¥{{p.total_price}}</td>
       <td>{{p.location}}</td>
-      <td>{{p.created_at.strftime('%Y-%m-%d %H:%M') if p.created_at else 'N/A'}}</td>
+      <td>{{p.date}}</td>
       <td>
         <a href='/purchase/view/{{p.id}}' class='btn btn-sm btn-info'>查看</a>
         <a href='/purchase/edit/{{p.id}}' class='btn btn-sm btn-primary'>编辑</a>
