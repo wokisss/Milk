@@ -43,14 +43,15 @@
         *   `project2/backend/database.py`
         *   `project3/backend/config/database.js`
 
-2.  **安装依赖:**
+2.  **数据库表与依赖安装:**
+    *   **项目 2 (FastAPI - 监管端):** 数据库表将在此项目首次启动时自动创建。
+        ```bash
+        pip install -r requirements-project2.txt
+        ```
     *   **项目 1 (Flask - 收购端):**
         ```bash
         pip install -r requirements-project1.txt
-        ```
-    *   **项目 2 (FastAPI - 监管端):**
-        ```bash
-        pip install -r requirements-project2.txt
+        python project1/milkpurchase/init_db.py
         ```
     *   **项目 2 (React - 前端):**
         ```bash
