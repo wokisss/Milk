@@ -1,6 +1,6 @@
 # backend/crud.py
 from sqlalchemy.orm import Session
-from . import models, schemas
+import models, schemas
 from typing import Optional
 
 # --- Herdsman CRUD ---
