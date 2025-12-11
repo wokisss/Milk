@@ -15,9 +15,9 @@ cd ..
 
 REM Start Project 1 Backend (Flask)
 ECHO Starting Project 1 Backend (Flask) on port 5000
-cd project1/milkpurchase
-start cmd /k "python -m pip install -r ../../requirements-project1.txt && python app.py"
-cd ../..
+cd project1
+start cmd /k "python -m pip install -r ../requirements-project1.txt && python app.py"
+cd ..
 
 REM Start Project 3 Backend (Node.js)
 ECHO Starting Project 3 Backend (Node.js) on port 3001
