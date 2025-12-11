@@ -1,0 +1,149 @@
+
+  /* 关键：禁止浏览器滚动（如需全局禁止） */
+html,
+  body {
+    height: 100%;
+    overflow: hidden;
+}
+
+  /* 页面整体样式 */
+.factory-page {
+    background-color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    height: 100vh; /* 页面高度撑满屏幕 */
+}
+
+  /* 顶部导航 */
+.nav-bar {
+    display: flex;
+    align-items: center;
+    height: 88rpx;
+    background-color: #1980FF;
+    color: #fff;
+    padding: 0 20rpx;
+}
+.back-btn {
+    font-size: 32rpx;
+    margin-right: 20rpx;
+}
+.title {
+    flex: 1;
+    text-align: center;
+    font-size: 32rpx;
+    font-weight: bold;
+}
+
+  /* 外层滚动容器：整个页面内容超出时滑动，隐藏内层滚动条 */
+.outer-scroll {
+    overflow-y: auto; /* 外层统一滚动 */
+    height: calc(100vh - 88rpx); /* 高度 = 屏幕高度 - 导航栏高度 */
+    box-sizing: border-box;
+    padding: 0 30rpx;
+}
+
+  /* 产品信息区域 */
+.product-info {
+    padding: 30rpx 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+}
+.product-img {
+    width: 160rpx;
+    height: 120rpx;
+    margin-bottom: 20rpx;
+}
+.product-name {
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+}
+.product-code {
+    font-size: 26rpx;
+    color: #666;
+}
+
+  /* 加工厂信息区域 */
+.factory-info {
+    background-color: #fff;
+    border-radius: 12rpx;
+    padding: 20rpx;
+    margin-bottom: 30rpx;
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+.factory-name {
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+}
+.factory-address {
+    font-size: 26rpx;
+    color: #666;
+    margin-bottom: 10rpx;
+}
+.factory-contact {
+    font-size: 26rpx;
+    color: #666;
+}
+
+  /* 流程信息区域 */
+.process-section {
+    width: 100%;
+}
+.process-item {
+    display: flex;
+    margin-bottom: 40rpx;
+    position: relative;
+}
+.process-dot {
+    width: 16rpx;
+    height: 16rpx;
+    border-radius: 50%;
+    background-color: #1980FF;
+    margin-right: 20rpx;
+    align-self: flex-start;
+    margin-top: 6rpx;
+}
+.process-content {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 12rpx;
+    padding: 20rpx;
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+.process-title {
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+}
+.process-staff, .process-time, .process-desc {
+    font-size: 26rpx;
+    color: #666;
+    margin-bottom: 6rpx;
+}
+.process-status {
+    font-size: 26rpx;
+    color: #07c160;
+}
+
+  /* 时间线连接线 */
+.process-item:not(:last-child) .process-dot {
+    position: relative;
+}
+.process-item:not(:last-child) .process-dot::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 16rpx;
+    bottom: -40rpx;
+    width: 2rpx;
+    background-color: #e5e5e5;
+    transform: translateX(-50%);
+}
+
+  /* 隐藏滚动条（可选，根据需求调整） */
+::-webkit-scrollbar {
+    width: 0; /* 隐藏滚动条宽度 */
+    height: 0;
+}

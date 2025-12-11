@@ -1,0 +1,1 @@
+{"version":3,"file":"login.js","sources":["../../../../Hbuilder/HBuilderX/plugins/uniapp-cli-vite/uniPage:/cGFnZXMvbG9naW4vbG9naW4udnVl"],"sourcesContent":["import MiniProgramPage from 'D:/桌面/研一/软件工程/product-traceability/pages/login/login.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;AACA,GAAG,WAAW,eAAe;"}

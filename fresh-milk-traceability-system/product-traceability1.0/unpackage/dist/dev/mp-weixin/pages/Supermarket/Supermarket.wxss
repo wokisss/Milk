@@ -1,0 +1,136 @@
+
+  /* 关键：禁止浏览器滚动 */
+html,
+  body {
+    height: 100%;
+    overflow: hidden;
+}
+
+  /* 页面整体样式 */
+.supermarket-page {
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+}
+
+  /* 顶部导航 */
+.nav-bar {
+    display: flex;
+    align-items: center;
+    height: 88rpx;
+    background-color: #1980FF;
+    color: #fff;
+    padding: 0 20rpx;
+}
+.back-btn {
+    font-size: 32rpx;
+    margin-right: 20rpx;
+}
+.title {
+    flex: 1;
+    text-align: center;
+    font-size: 32rpx;
+    font-weight: bold;
+}
+
+  /* 产品信息区域 */
+.product-info {
+    padding: 30rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+}
+.product-img {
+    width: 160rpx;
+    height: 120rpx;
+    margin-bottom: 20rpx;
+}
+.product-name {
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+}
+.product-code {
+    font-size: 26rpx;
+    color: #666;
+}
+
+  /* 超市信息区域 */
+.supermarket-info {
+    padding: 30rpx;
+    background-color: #fff;
+    border-radius: 12rpx;
+    margin: 0 30rpx 30rpx;
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+.supermarket-name {
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+}
+.supermarket-address {
+    font-size: 26rpx;
+    color: #666;
+    margin-bottom: 10rpx;
+}
+.supermarket-contact {
+    font-size: 26rpx;
+    color: #666;
+}
+
+  /* 流程信息区域 */
+.process-section {
+    padding: 0 30rpx 30rpx;
+}
+.process-item {
+    display: flex;
+    margin-bottom: 40rpx;
+    position: relative;
+}
+.process-dot {
+    width: 16rpx;
+    height: 16rpx;
+    border-radius: 50%;
+    background-color: #1980FF;
+    margin-right: 20rpx;
+    align-self: flex-start;
+    margin-top: 6rpx;
+}
+.process-content {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 12rpx;
+    padding: 20rpx;
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+.process-title {
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+}
+.process-staff, .process-time {
+    font-size: 26rpx;
+    color: #666;
+    margin-bottom: 6rpx;
+}
+.process-status {
+    font-size: 26rpx;
+    color: #07c160;
+}
+
+  /* 时间线连接线（如需可添加） */
+.process-item:not(:last-child) .process-dot {
+    position: relative;
+}
+.process-item:not(:last-child) .process-dot::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 16rpx;
+    bottom: -40rpx;
+    width: 2rpx;
+    background-color: #e5e5e5;
+    transform: translateX(-50%);
+}

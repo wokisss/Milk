@@ -1,0 +1,121 @@
+
+/* 页面整体样式：禁用滑动，固定高度 */
+.my-page.data-v-2f1ef635 {
+  background-color: #f5f5f5;
+  height: 100vh; /* 固定页面高度，不滚动 */
+  overflow: hidden; /* 禁用滚动（替代小程序不支持的 DOM 操作） */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding-bottom: 30rpx; /* 底部预留空间 */
+}
+
+/* 个人信息卡片：靠左对齐，移除居中 */
+.user-card.data-v-2f1ef635 {
+  background-color: #fff;
+  padding: 40rpx 30rpx;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+.avatar-container.data-v-2f1ef635 {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 30rpx;
+  background-color: #eee;
+  border: 4rpx solid #f0f0f0; /* 优化头像边框 */
+}
+.avatar.data-v-2f1ef635 {
+  width: 100%;
+  height: 100%;
+}
+
+/* 登录后信息：靠左对齐，简洁样式 */
+.user-info.data-v-2f1ef635 {
+  text-align: left;
+}
+.user-name.data-v-2f1ef635 {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+.user-phone.data-v-2f1ef635 {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 表单容器：紧凑布局，避免滚动 */
+.form-container.data-v-2f1ef635 {
+  background-color: #fff;
+  padding: 0 30rpx 30rpx;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+.form-title.data-v-2f1ef635 {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #eee;
+  margin-bottom: 24rpx;
+}
+
+/* 表单项样式 */
+.form-item.data-v-2f1ef635 {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+.form-item.data-v-2f1ef635:last-child {
+  border-bottom: none;
+}
+.label.data-v-2f1ef635 {
+  width: 120rpx;
+  font-size: 26rpx;
+  color: #333;
+}
+.input.data-v-2f1ef635 {
+  flex: 1;
+  font-size: 26rpx;
+  color: #333;
+  padding: 8rpx 0;
+}
+
+/* 性别选择样式 */
+.gender-item.data-v-2f1ef635 {
+  align-items: center;
+}
+.gender-options.data-v-2f1ef635 {
+  flex: 1;
+  display: flex;
+  gap: 60rpx;
+  align-items: center;
+}
+.radio-label.data-v-2f1ef635 {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: #333;
+  cursor: pointer;
+}
+.radio-label radio.data-v-2f1ef635 {
+  margin-right: 12rpx;
+}
+
+/* 保存按钮：优化位置，避免底部溢出 */
+.save-btn.data-v-2f1ef635 {
+  margin-top: 30rpx;
+  height: 90rpx;
+  background-color: #1980FF;
+  color: #fff;
+  border-radius: 45rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 500;
+}

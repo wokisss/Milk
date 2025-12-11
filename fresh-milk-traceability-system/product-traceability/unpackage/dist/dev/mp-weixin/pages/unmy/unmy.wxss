@@ -1,0 +1,92 @@
+
+	/* 在你的页面的 style 标签内添加 */
+page.data-v-c28d5cd2 {
+	  overflow: hidden;
+	  height: 100%;
+}
+.unlogin-page.data-v-c28d5cd2 {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+.nav-bar.data-v-c28d5cd2 {
+  height: 88rpx;
+  background-color: #1980FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.title.data-v-c28d5cd2 {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: bold;
+}
+.icon-container.data-v-c28d5cd2 {
+  display: flex;
+  justify-content: center;
+  padding: 60rpx 0;
+}
+.icon-bg.data-v-c28d5cd2 {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  background-color: #ffebee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.cartoon-icon.data-v-c28d5cd2 {
+  width: 120rpx;
+  height: 120rpx;
+}
+.unlogin-tip.data-v-c28d5cd2 {
+  text-align: center;
+  font-size: 30rpx;
+  color: #666;
+  margin-bottom: 40rpx;
+}
+.login-btn.data-v-c28d5cd2 {
+  width: calc(100% - 80rpx);
+  height: 90rpx;
+  background-color: #1980FF;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 45rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 60rpx;
+  font-weight: 500;
+}
+.tab-bar.data-v-c28d5cd2 {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.tab-item.data-v-c28d5cd2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.tab-icon.data-v-c28d5cd2 {
+  width: 40rpx;
+  height: 40rpx;
+}
+.tab-item text.data-v-c28d5cd2 {
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 6rpx;
+}
+.tab-item.active text.data-v-c28d5cd2 {
+  color: #1980FF;
+}

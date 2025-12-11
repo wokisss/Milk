@@ -1,0 +1,5 @@
+{
+  "name": "Highland Smart Pastoral System",
+  "description": "A comprehensive management system for pastoral areas, featuring herdsman management, acquisition statistics, announcements, and user profiles. Built with React and Python.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,130 @@
+
+/* 页面整体样式 */
+.login-page.data-v-e4e4508d {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 顶部导航栏 */
+.nav-bar.data-v-e4e4508d {
+  height: 88rpx;
+  background-color: #1980FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.title.data-v-e4e4508d {
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+/* 卡通图标区域 */
+.icon-container.data-v-e4e4508d {
+  display: flex;
+  justify-content: center;
+  padding: 60rpx 0;
+}
+.icon-bg.data-v-e4e4508d {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  background-color: #ffebee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cartoon-icon.data-v-e4e4508d {
+  width: 120rpx;
+  height: 120rpx;
+}
+
+/* 表单容器 */
+.form-container.data-v-e4e4508d {
+  padding: 0 40rpx;
+}
+
+/* 表单项样式 */
+.form-item.data-v-e4e4508d {
+  display: flex;
+  align-items: center;
+  padding: 25rpx 0;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+}
+
+/* 第一个表单项圆角 */
+.form-item.data-v-e4e4508d:first-child {
+  border-top-left-radius: 12rpx;
+  border-top-right-radius: 12rpx;
+  padding-top: 30rpx;
+}
+
+/* 最后一个表单项圆角（无下边框） */
+.form-item.data-v-e4e4508d:last-child {
+  border-bottom-left-radius: 12rpx;
+  border-bottom-right-radius: 12rpx;
+  padding-bottom: 30rpx;
+  border-bottom: none;
+}
+
+/* 表单项标签 */
+.label.data-v-e4e4508d {
+  width: 140rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+
+/* 输入框样式 */
+.input.data-v-e4e4508d {
+  flex: 1;
+  font-size: 30rpx;
+  padding: 5rpx 0;
+  color: #333;
+}
+
+/* 性别选择容器（横向排列） */
+.radio-group.data-v-e4e4508d {
+  flex: 1;
+  display: flex;
+  gap: 40rpx; /* 男女选项间距 */
+}
+
+/* 单选框+文字组合样式（增大点击区域） */
+.radio-label.data-v-e4e4508d {
+  display: flex;
+  align-items: center;
+  font-size: 30rpx;
+  color: #333;
+  cursor: pointer;
+  padding: 10rpx 0; /* 增大点击区域 */
+}
+
+/* 单选框与文字间距 */
+.radio-label text.data-v-e4e4508d {
+  margin-left: 10rpx;
+}
+
+/* 错误提示样式 */
+.error-tip.data-v-e4e4508d {
+  color: #ff4d4f;
+  font-size: 26rpx;
+  padding: 0 40rpx 20rpx;
+}
+
+/* 登录按钮样式 */
+.login-btn.data-v-e4e4508d {
+  width: calc(100% - 80rpx);
+  height: 90rpx;
+  background-color: #1980FF;
+  color: #fff;
+  font-size: 32rpx;
+  border-radius: 45rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 60rpx auto;
+  font-weight: 500;
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "牛奶溯源",
+  "navigationBarBackgroundColor": "#1980FF",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}

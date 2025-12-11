@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/login/login",
+    "pages/my/my",
+    "pages/Logistics/Logistics",
+    "pages/Supermarket/Supermarket",
+    "pages/Processing/Processing",
+    "pages/scan/scan",
+    "pages/select/select",
+    "pages/unmy/unmy",
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "牛奶溯源",
+    "navigationBarBackgroundColor": "#1980FF",
+    "backgroundColor": "#F5F5F5",
+    "enablePullDownRefresh": false,
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#666",
+    "selectedColor": "#1980FF",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "static/home.png",
+        "selectedIconPath": "static/home-active.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的",
+        "iconPath": "static/mine.png",
+        "selectedIconPath": "static/mine-active.png"
+      }
+    ],
+    "position": "bottom"
+  },
+  "usingComponents": {}
+}

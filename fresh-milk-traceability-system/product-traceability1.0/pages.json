@@ -1,0 +1,94 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源"
+			}
+		},
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源"
+			}
+		},
+		{
+			"path": "pages/Logistics/Logistics",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源"
+			}
+		},
+		{
+			"path": "pages/Supermarket/Supermarket",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源"
+			}
+		},
+		{
+			"path": "pages/Processing/Processing",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源"
+			}
+		},
+		{
+			"path": "pages/scan/scan",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源"
+			}
+		},
+		{
+			"path": "pages/select/select",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/unmy/unmy",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源",
+								"navigationBarLeftButton": "none"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {},
+	 "tabBar": {
+	    "color": "#666",         // 未选中文字颜色
+	    "selectedColor": "#1980FF", // 选中文字颜色（与主色调一致）
+	    "backgroundColor": "#fff",  // 底部导航背景色
+	    "borderStyle": "black",    // 边框样式（可选）
+	    "list": [
+	      {
+	        "pagePath": "pages/home/home", // 首页路径
+	        "text": "首页",                 // 导航文字
+	        "iconPath": "static/home.png",  // 未选中图标（本地图片路径）
+	        "selectedIconPath": "static/home-active.png" // 选中图标（本地图片路径）
+	      },
+	      {
+	        "pagePath": "pages/my/my",     // “我的”路径
+	        "text": "我的",                 // 导航文字
+	        "iconPath": "static/mine.png", // 未选中图标
+	        "selectedIconPath": "static/mine-active.png" // 选中图标
+	      }
+	    ]
+	  }
+}
+
+

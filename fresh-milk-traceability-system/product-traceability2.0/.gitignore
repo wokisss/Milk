@@ -1,0 +1,30 @@
+# 编译产物 - 每个人需要自己编译
+unpackage/
+
+# 依赖目录
+node_modules/
+
+# 本地环境配置
+.env.local
+.env.*.local
+
+# 编辑器目录
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 日志
+*.log
+npm-debug.log*
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+
+
+

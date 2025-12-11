@@ -1,0 +1,105 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "牛奶溯源"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/statistics/statistics",
+			"style": {
+				"navigationBarTitleText": "数据统计"
+			}
+		},
+		{
+			"path": "pages/warning/warning",
+			"style": {
+				"navigationBarTitleText": "串货预警"
+			}
+		},
+		{
+			"path": "pages/Logistics/Logistics",
+			"style": {
+				"navigationBarTitleText": "物流追踪"
+			}
+		},
+		{
+			"path": "pages/Supermarket/Supermarket",
+			"style": {
+				"navigationBarTitleText": "超市信息"
+			}
+		},
+		{
+			"path": "pages/Processing/Processing",
+			"style": {
+				"navigationBarTitleText": "加工信息"
+			}
+		},
+		{
+			"path": "pages/scan/scan",
+			"style": {
+				"navigationBarTitleText": "扫码",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/select/select",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/unmy/unmy",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationBarLeftButton": "none"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "牛奶溯源",
+		"navigationBarBackgroundColor": "#1980FF",
+		"backgroundColor": "#F5F5F5"
+	},
+	"uniIdRouter": {},
+	"tabBar": {
+		"color": "#666",
+		"selectedColor": "#1980FF",
+		"backgroundColor": "#fff",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/home/home",
+				"text": "首页",
+				"iconPath": "static/home.png",
+				"selectedIconPath": "static/home-active.png"
+			},
+			{
+				"pagePath": "pages/my/my",
+				"text": "我的",
+				"iconPath": "static/mine.png",
+				"selectedIconPath": "static/mine-active.png"
+			}
+		]
+	}
+}

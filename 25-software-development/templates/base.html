@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang='zh-CN'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>鲜奶收购管理</title>
+  <link rel='stylesheet' href='/static/css/style.css'>
+</head>
+<body>
+  <header>
+    <h1>鲜奶收购管理系统</h1>
+    <nav>
+      <a href='/'>首页</a>
+      <a href='/farmers'>牧民信息</a>
+      <a href='/purchases'>收购信息</a>
+      <a href='/farmer/new'>添加牧民</a>
+      <a href='/purchase/new'>新增收购</a>
+    </nav>
+  </header>
+  
+  <div class='container'>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class='flashes'>
+          {% for cat, msg in messages %}<li class='{{cat}}'>{{msg}}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    
+    <div class='content'>
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+
+  /* 关键：让启动页容器占满整个屏幕，并禁止滚动 */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff; /* 或者你想要的任何背景色 */
+    overflow: hidden; /* 禁止滚动 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* 这里的高度100vh可以去掉，因为父容器已经居中了 */
+}
+.logo {
+    height: 200rpx;
+    width: 200rpx;
+    margin-bottom: 50rpx;
+}
+.text-area {
+    display: flex;
+    justify-content: center;
+}
+.title {
+    font-size: 36rpx;
+    color: #333;
+}
