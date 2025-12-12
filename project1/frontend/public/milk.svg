@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="milkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e8f4f8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- 瓶身 -->
+  <path d="M30 25 L30 15 C30 10 35 5 50 5 C65 5 70 10 70 15 L70 25 L75 35 L75 85 C75 92 68 95 50 95 C32 95 25 92 25 85 L25 35 Z" 
+        fill="url(#milkGradient)" stroke="#1274fb" stroke-width="2"/>
+  <!-- 瓶盖 -->
+  <rect x="35" y="2" width="30" height="8" rx="2" fill="#1274fb"/>
+  <!-- 牛奶液面 -->
+  <path d="M28 45 Q50 40 72 45 L72 82 C72 88 65 92 50 92 C35 92 28 88 28 82 Z" 
+        fill="#f0f8ff" opacity="0.8"/>
+  <!-- 奶滴装饰 -->
+  <ellipse cx="45" cy="55" rx="4" ry="6" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="55" cy="60" rx="3" ry="4" fill="#ffffff" opacity="0.5"/>
+</svg>
+
+
+
