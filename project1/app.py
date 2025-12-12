@@ -20,18 +20,19 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.before_request
 def ensure_initialized():
-    """确保数据库和初始数据都已就绪。"""
-    # 修复：在执行任何数据库查询之前，确保所有的表都已创建。
-    # db.create_all() 会检查表是否存在，如果不存在，则根据定义的模型创建它们。
-    db.create_all()
-    
-    # 检查是否存在 admin 用户，如果不存在，则创建一个
-    if not User.query.filter_by(username='admin').first():
-        hashed_password = bcrypt.generate_password_hash('admin123').decode('utf-8')
-        admin_user = User(username='admin', password_hash=hashed_password, role='admin')
-        db.session.add(admin_user)
-        db.session.commit()
+    with app.app_context():
+        # --- 恢复下面这一行 ---
+        db.create_all()  
+        # 解释：虽然 herdsmen 表由 Project 2 创建，但 users 表需要由这里创建。
+        # SQLAlchemy 会自动检测：如果表已存在则跳过，不存在则创建。
+        
+        if not User.query.filter_by(username='admin').first():
+            admin_user = User(username='admin', role='admin')
+            admin_user.set_password('admin123')
+            db.session.add(admin_user)
+            db.session.commit()
 
 @app.route('/')
 def index():
