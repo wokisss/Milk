@@ -1,58 +1,83 @@
 const express = require('express');
 const router = express.Router();
-// 修复：引用正确的 MySQL 数据库配置文件
-const db = require('../config/database');
+const db = require('../config/database'); // Correctly imports the sqlite3 db instance
 
 /**
- * 获取产品列表
- * GET /api/product/list
- * 执行联表查询并格式化数据以供前端使用
+ * @route   GET /api/product/list
+ * @desc    Get all products from the product table
+ * @access  Public
  */
-// 修复：将路由处理器改造为 async 函数以支持 await
-router.get('/list', async (req, res) => {
-  // 关键SQL：联表查询 acquisitions 和 herdsmen
-  const sql = `
-    SELECT 
-      a.id, 
-      a.initial_id,
-      a.weight,
-      a.price,
-      a.total_price,
-      a.date,
-      a.location,
-      h.name as herdsman_name 
-    FROM acquisitions a 
-    JOIN herdsmen h ON a.herdsman_id = h.id
-    ORDER BY a.date DESC
-  `;
+router.get('/list', (req, res) => {
+  const sql = 'SELECT * FROM product ORDER BY production_date DESC';
 
-  try {
-    // 修复：使用 await 和新的 db.query 方法
-    const rows = await db.query(sql);
-
-    // 关键步骤：格式化数据以匹配前端需求
-    const formattedData = rows.map(row => ({
-      product_name: `生态鲜奶 (批次:${row.initial_id})`,
-      // 随机分配一个产品图片
-      product_img: `/static/img/product/${Math.floor(Math.random() * 4) + 1}.jpg`,
-      // 将收购地点映射为产地
-      province: row.location,
-      price: row.price,
-      date: row.date,
-      herdsman: row.herdsman_name
-    }));
-
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error('Error fetching product list:', err.message);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve products from the database.'
+      });
+    }
     res.json({
       success: true,
-      data: formattedData,
+      data: rows
     });
-  } catch (err) {
-    console.error('获取产品列表失败：', err);
-    return res.status(500).json({
-      success: false,
-      message: '服务器错误，获取产品失败'
-    });
-  }
+  });
 });
+
+/**
+ * @route   GET /api/product/trace/:id
+ * @desc    Get the full traceability information for a single product
+ * @access  Public
+ */
+router.get('/trace/:id', (req, res) => {
+  const productId = req.params.id;
+  const response = {};
+
+  const productSql = 'SELECT * FROM product WHERE id = ?';
+  const logisticsSql = 'SELECT * FROM logistics WHERE product_id = ?';
+  const processingSql = 'SELECT * FROM processing WHERE product_id = ?';
+  const supermarketSql = 'SELECT * FROM supermarket WHERE product_id = ?';
+
+  db.serialize(() => {
+    db.get(productSql, [productId], (err, row) => {
+      if (err) {
+        console.error(err.message);
+        return res.status(500).json({ success: false, message: 'Error querying product table' });
+      }
+      if (!row) {
+        return res.status(404).json({ success: false, message: 'Product not found' });
+      }
+      response.product = row;
+
+      db.get(logisticsSql, [productId], (err, row) => {
+        if (err) {
+          console.error(err.message);
+          return res.status(500).json({ success: false, message: 'Error querying logistics table' });
+        }
+        response.logistics = row || null;
+
+        db.get(processingSql, [productId], (err, row) => {
+          if (err) {
+            console.error(err.message);
+            return res.status(500).json({ success: false, message: 'Error querying processing table' });
+          }
+          response.processing = row || null;
+
+          db.get(supermarketSql, [productId], (err, row) => {
+            if (err) {
+              console.error(err.message);
+              return res.status(500).json({ success: false, message: 'Error querying supermarket table' });
+            }
+            response.supermarket = row || null;
+
+            res.json({ success: true, data: response });
+          });
+        });
+      });
+    });
+  });
+});
+
 
 module.exports = router;

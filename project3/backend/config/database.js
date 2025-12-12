@@ -1,21 +1,15 @@
-const mysql = require('mysql2/promise');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: '123456',
-  database: 'smart_milk_chain',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+const dbPath = path.resolve(__dirname, '..', 'data', 'milk_trace.db');
+
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error(`Error connecting to database: ${err.message}`);
+  } else {
+    console.log('Connected to the SQLite database.');
+  }
 });
 
-async function query(sql, params) {
-  const [rows, fields] = await pool.execute(sql, params);
-  return rows;
-}
+module.exports = db;
 
-module.exports = {
-  query
-};

@@ -1,7 +1,35 @@
+const fs = require('fs');
+const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
+
+// --- Database Initialization ---
+const dbPath = path.join(__dirname, 'data', 'milk_trace.db');
+const initSqlPath = path.join(__dirname, 'database', 'init.sql');
+
+// Automatically initialize the database if it doesn't exist
+if (!fs.existsSync(dbPath)) {
+  console.log('Database file not found. Initializing new database...');
+  const initSql = fs.readFileSync(initSqlPath, 'utf8');
+  const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+      console.error('Error creating database file:', err.message);
+      return;
+    }
+  });
+
+  db.exec(initSql, (err) => {
+    if (err) {
+      console.error('Error initializing database:', err.message);
+    } else {
+      console.log('Database initialized successfully with schema.');
+    }
+    db.close();
+  });
+}
+// --- End of Database Initialization ---
+
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
 require('dotenv').config();
 
 // 确保必要的目录存在
@@ -76,3 +104,4 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
