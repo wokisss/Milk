@@ -20,15 +20,18 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.before_request
 def ensure_initialized():
-    with app.app_context():
-        # db.create_all() 已被移除，因为表结构由Project 2管理
-        if not User.query.filter_by(username='admin').first():
-            admin_user = User(username='admin', role='admin')
-            admin_user.set_password('admin123')
-            db.session.add(admin_user)
-            db.session.commit()
+    """确保数据库和初始数据都已就绪。"""
+    # 修复：在执行任何数据库查询之前，确保所有的表都已创建。
+    # db.create_all() 会检查表是否存在，如果不存在，则根据定义的模型创建它们。
+    db.create_all()
+    
+    # 检查是否存在 admin 用户，如果不存在，则创建一个
+    if not User.query.filter_by(username='admin').first():
+        hashed_password = bcrypt.generate_password_hash('admin123').decode('utf-8')
+        admin_user = User(username='admin', password_hash=hashed_password, role='admin')
+        db.session.add(admin_user)
+        db.session.commit()
 
 @app.route('/')
 def index():
