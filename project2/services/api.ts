@@ -110,7 +110,8 @@ export const api = {
       }
       return [...MOCK_HERDSMEN];
     }
-    const url = search ? `${API_URL}/herdsmen?search=${search}` : `${API_URL}/herdsmen`;
+    // 修复：确保 GET 请求也添加尾部斜杠
+    const url = search ? `${API_URL}/herdsmen/?search=${search}` : `${API_URL}/herdsmen/`;
     const res = await fetch(url);
     return res.json();
   },
@@ -130,7 +131,8 @@ export const api = {
       MOCK_HERDSMEN.push(newHerdsman);
       return newHerdsman;
     }
-    const res = await fetch(`${API_URL}/herdsmen`, {
+    // 修复：为 POST 请求添加尾部斜杠
+    const res = await fetch(`${API_URL}/herdsmen/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(herdsmanData)
@@ -154,7 +156,8 @@ export const api = {
       }
       throw new Error("Herdsman not found");
     }
-    const res = await fetch(`${API_URL}/herdsmen/${id}`, {
+    // 修复：为 PUT 请求添加尾部斜杠
+    const res = await fetch(`${API_URL}/herdsmen/${id}/`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(herdsmanData)
@@ -173,7 +176,8 @@ export const api = {
       MOCK_HERDSMEN = MOCK_HERDSMEN.filter(h => h.id !== id);
       return true; // 模拟删除成功
     }
-    await fetch(`${API_URL}/herdsmen/${id}`, { method: 'DELETE' });
+    // 修复：为 DELETE 请求添加尾部斜杠
+    await fetch(`${API_URL}/herdsmen/${id}/`, { method: 'DELETE' });
     return true;
   },
 
@@ -248,7 +252,8 @@ export const api = {
       await delay(300);
       return [...MOCK_ANNOUNCEMENTS];
     }
-    const res = await fetch(`${API_URL}/announcements`);
+    // 修复：为 GET 请求添加尾部斜杠
+    const res = await fetch(`${API_URL}/announcements/`);
     return res.json();
   },
 
@@ -292,7 +297,8 @@ export const api = {
       }
       throw new Error("Announcement not found");
     }
-    const res = await fetch(`${API_URL}/announcements/${id}`, {
+    // 修复：为 PUT 请求添加尾部斜杠
+    const res = await fetch(`${API_URL}/announcements/${id}/`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(announcementData)
@@ -311,7 +317,8 @@ export const api = {
       MOCK_ANNOUNCEMENTS = MOCK_ANNOUNCEMENTS.filter(a => a.id !== id);
       return true; // 模拟删除成功
     }
-    await fetch(`${API_URL}/announcements/${id}`, { method: 'DELETE' });
+    // 修复：为 DELETE 请求添加尾部斜杠
+    await fetch(`${API_URL}/announcements/${id}/`, { method: 'DELETE' });
     return true;
   },
   

@@ -52,7 +52,43 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+
+// --- 新增代码 ---
+// 用于存储从API获取的真实产品数据
+const products = ref([]);
+
+// onMounted生命周期钩子，在组件加载时执行
+onMounted(() => {
+  // uni.request发出网络请求
+  uni.request({
+    url: 'http://localhost:3001/api/product/list',
+    method: 'GET',
+    success: (res) => {
+      // 请求成功后，检查返回的数据是否有效
+      if (res.data && res.data.success) {
+        // 将获取到的数据赋值给products
+        products.value = res.data.data;
+      } else {
+        // 打印错误信息
+        console.error('获取产品列表失败:', res.data.message);
+        uni.showToast({
+          title: '数据加载失败',
+          icon: 'none'
+        });
+      }
+    },
+    fail: (err) => {
+      // 请求失败时，在控制台打印错误
+      console.error('请求API失败:', err);
+      uni.showToast({
+        title: '网络请求失败',
+        icon: 'none'
+      });
+    }
+  });
+});
+// --- 新增代码结束 ---
 
 // 全国所有省份/地区列表
 const allProvinces = ref([
@@ -71,57 +107,14 @@ const allProvinces = ref([
   '香港', '澳门'
 ]);
 
-// 本地模拟产品数据（无需接口）
-const localProducts = ref([
-  {
-    product_name: "牦牛牛奶",
-    product_img: "/static/img/product/1.jpg",
-    province: "四川"
-  },
-  {
-    product_name: "牦牛牛奶",
-    product_img: "/static/img/product/2.jpg",
-    province: "四川"
-  },
-  {
-    product_name: "有机牛奶",
-    product_img: "/static/img/product/3.jpg",
-    province: "内蒙古"
-  },
-  {
-    product_name: "高原牛奶",
-    product_img: "/static/img/product/4.jpg",
-    province: "青海"
-  },
-  {
-    product_name: "草原鲜奶",
-    product_img: "/static/img/product/1.jpg",
-    province: "新疆"
-  },
-  {
-    product_name: "高山牛奶",
-    product_img: "/static/img/product/2.jpg",
-    province: "云南"
-  },
-  {
-    product_name: "原生态牛奶",
-    product_img: "/static/img/product/3.jpg",
-    province: "西藏"
-  },
-  {
-    product_name: "优质鲜奶",
-    product_img: "/static/img/product/4.jpg",
-    province: "黑龙江"
-  }
-]);
-
 // 响应式数据
 const selectedProvince = ref('全部');
 const searchKeyword = ref('');
 
 // 筛选产品（根据地区+搜索关键词）
 const filteredProducts = computed(() => {
-  return localProducts.value.filter(item => {
+  // 修复：从API获取的数据(products)进行筛选，而不是本地假数据
+  return products.value.filter(item => {
     // 地区筛选
     const provinceMatch = selectedProvince.value === '全部' || item.province === selectedProvince.value;
     // 关键词筛选
