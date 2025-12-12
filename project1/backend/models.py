@@ -3,6 +3,7 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+# The User model remains unchanged as it's specific to project1's authentication
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -19,51 +20,54 @@ class User(db.Model):
             'role': self.role
         }
 
-class Farmer(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    phone = db.Column(db.String(20))
-    address = db.Column(db.String(200))
-    id_card = db.Column(db.String(20))
-    bank_account = db.Column(db.String(30))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    purchases = db.relationship('Purchase', backref='farmer', lazy=True)
+# Re-defined Farmer model as Herdsman, mapping to the 'herdsmen' table of project2
+class Herdsman(db.Model):
+    __tablename__ = "herdsmen"
+
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    id_card = db.Column(db.String(255), unique=True, index=True, nullable=False)
+    name = db.Column(db.String(255), index=True, nullable=False)
+    phone = db.Column(db.String(255), nullable=True)
+    address = db.Column(db.String(255), nullable=True)
+    bank_card = db.Column(db.String(255), nullable=True)
+    milk_station_id = db.Column(db.Integer, nullable=True)
+    
+    # Relationship to acquisitions
+    acquisitions = db.relationship('Acquisition', backref='herdsman', lazy=True)
 
     def to_dict(self):
         return {
             'id': self.id,
+            'id_card': self.id_card,
             'name': self.name,
             'phone': self.phone,
             'address': self.address,
-            'id_card': self.id_card,
-            'bank_account': self.bank_account,
-            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None
+            'bank_card': self.bank_card,
+            'milk_station_id': self.milk_station_id
         }
 
-class Purchase(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    farmer_id = db.Column(db.Integer, db.ForeignKey('farmer.id'), nullable=False)
-    quantity = db.Column(db.Float, nullable=False)
-    unit_price = db.Column(db.Float, nullable=False)
+# Re-defined Purchase model as Acquisition, mapping to the 'acquisitions' table of project2
+class Acquisition(db.Model):
+    __tablename__ = "acquisitions"
+
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    herdsman_id = db.Column(db.Integer, db.ForeignKey("herdsmen.id"), nullable=False)
+    initial_id = db.Column(db.String(255), nullable=False)
+    weight = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.Float, nullable=False)
     total_price = db.Column(db.Float, nullable=False)
-    quality_level = db.Column(db.String(10))
-    purchase_date = db.Column(db.DateTime, default=datetime.utcnow)
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    date = db.Column(db.String(255), nullable=False)
+    location = db.Column(db.String(255), nullable=False)
 
     def to_dict(self):
         return {
             'id': self.id,
-            'farmer_id': self.farmer_id,
-            'farmer_name': self.farmer.name if self.farmer else None,
-            'quantity': self.quantity,
-            'unit_price': self.unit_price,
+            'herdsman_id': self.herdsman_id,
+            'herdsman_name': self.herdsman.name if self.herdsman else None,
+            'initial_id': self.initial_id,
+            'weight': self.weight,
+            'price': self.price,
             'total_price': self.total_price,
-            'quality_level': self.quality_level,
-            'purchase_date': self.purchase_date.strftime('%Y-%m-%d') if self.purchase_date else None,
-            'notes': self.notes,
-            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None
+            'date': self.date,
+            'location': self.location
         }
-
-
-

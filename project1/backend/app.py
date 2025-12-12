@@ -3,32 +3,23 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
-from models import db, User, Farmer, Purchase
+# Updated model imports
+from models import db, User, Herdsman, Acquisition
 from datetime import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# 初始化扩展
+# Initialize extensions
 CORS(app)
 jwt = JWTManager(app)
 db.init_app(app)
 
-# 创建数据库表
-with app.app_context():
-    db.create_all()
-    # 创建默认管理员账户
-    if not User.query.filter_by(username='admin').first():
-        admin = User(
-            username='admin',
-            password=generate_password_hash('admin123'),
-            name='管理员',
-            role='admin'
-        )
-        db.session.add(admin)
-        db.session.commit()
+# The db.create_all() call is removed, as tables are managed by project2
+# The logic to create a default admin user is also removed to avoid conflicts,
+# assuming user management might be centralized or handled differently now.
 
-# ==================== 认证接口 ====================
+# ==================== Authentication API (Unchanged) ====================
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -46,7 +37,7 @@ def login():
                 'user': user.to_dict()
             }
         })
-    return jsonify({'success': False, 'message': '用户名或密码错误'}), 401
+    return jsonify({'success': False, 'message': 'Username or password incorrect'}), 401
 
 @app.route('/api/user/info', methods=['GET'])
 @jwt_required()
@@ -55,122 +46,148 @@ def get_user_info():
     user = User.query.get(user_id)
     if user:
         return jsonify({'success': True, 'data': user.to_dict()})
-    return jsonify({'success': False, 'message': '用户不存在'}), 404
+    return jsonify({'success': False, 'message': 'User not found'}), 404
 
-# ==================== 牧民管理接口 ====================
+# ==================== Herdsman Management API (Refactored from Farmer) ====================
+# The API endpoints are kept the same (/api/farmers) to ensure frontend compatibility.
 
 @app.route('/api/farmers', methods=['GET'])
 def get_farmers():
-    farmers = Farmer.query.all()
+    herdsmen = Herdsman.query.all()
     return jsonify({
         'success': True,
-        'data': [f.to_dict() for f in farmers]
+        'data': [h.to_dict() for h in herdsmen]
     })
 
 @app.route('/api/farmers/<int:id>', methods=['GET'])
 def get_farmer(id):
-    farmer = Farmer.query.get_or_404(id)
-    return jsonify({'success': True, 'data': farmer.to_dict()})
+    herdsman = Herdsman.query.get_or_404(id)
+    return jsonify({'success': True, 'data': herdsman.to_dict()})
 
 @app.route('/api/farmers', methods=['POST'])
 def create_farmer():
     data = request.get_json()
-    farmer = Farmer(
+    # Map old frontend fields to new Herdsman model
+    herdsman = Herdsman(
         name=data.get('name'),
         phone=data.get('phone'),
         address=data.get('address'),
         id_card=data.get('id_card'),
-        bank_account=data.get('bank_account')
+        bank_card=data.get('bank_account'), # Mapping bank_account to bank_card
+        milk_station_id=data.get('milk_station_id') # Assuming frontend might send this
     )
-    db.session.add(farmer)
+    db.session.add(herdsman)
     db.session.commit()
-    return jsonify({'success': True, 'data': farmer.to_dict()}), 201
+    return jsonify({'success': True, 'data': herdsman.to_dict()}), 201
 
 @app.route('/api/farmers/<int:id>', methods=['PUT'])
 def update_farmer(id):
-    farmer = Farmer.query.get_or_404(id)
+    herdsman = Herdsman.query.get_or_404(id)
     data = request.get_json()
-    farmer.name = data.get('name', farmer.name)
-    farmer.phone = data.get('phone', farmer.phone)
-    farmer.address = data.get('address', farmer.address)
-    farmer.id_card = data.get('id_card', farmer.id_card)
-    farmer.bank_account = data.get('bank_account', farmer.bank_account)
+    herdsman.name = data.get('name', herdsman.name)
+    herdsman.phone = data.get('phone', herdsman.phone)
+    herdsman.address = data.get('address', herdsman.address)
+    herdsman.id_card = data.get('id_card', herdsman.id_card)
+    herdsman.bank_card = data.get('bank_account', herdsman.bank_card) # Mapping
+    herdsman.milk_station_id = data.get('milk_station_id', herdsman.milk_station_id)
     db.session.commit()
-    return jsonify({'success': True, 'data': farmer.to_dict()})
+    return jsonify({'success': True, 'data': herdsman.to_dict()})
 
 @app.route('/api/farmers/<int:id>', methods=['DELETE'])
 def delete_farmer(id):
-    farmer = Farmer.query.get_or_404(id)
-    db.session.delete(farmer)
+    herdsman = Herdsman.query.get_or_404(id)
+    db.session.delete(herdsman)
     db.session.commit()
-    return jsonify({'success': True, 'message': '删除成功'})
+    return jsonify({'success': True, 'message': 'Delete successful'})
 
-# ==================== 收购记录接口 ====================
+# ==================== Acquisition API (Refactored from Purchase) ====================
+# The API endpoints are kept the same (/api/purchases) to ensure frontend compatibility.
 
 @app.route('/api/purchases', methods=['GET'])
 def get_purchases():
-    purchases = Purchase.query.all()
+    acquisitions = Acquisition.query.all()
     return jsonify({
         'success': True,
-        'data': [p.to_dict() for p in purchases]
+        'data': [a.to_dict() for a in acquisitions]
     })
 
 @app.route('/api/purchases/<int:id>', methods=['GET'])
 def get_purchase(id):
-    purchase = Purchase.query.get_or_404(id)
-    return jsonify({'success': True, 'data': purchase.to_dict()})
+    acquisition = Acquisition.query.get_or_404(id)
+    return jsonify({'success': True, 'data': acquisition.to_dict()})
 
 @app.route('/api/purchases', methods=['POST'])
 def create_purchase():
     data = request.get_json()
-    quantity = float(data.get('quantity', 0))
-    unit_price = float(data.get('unit_price', 0))
     
-    purchase = Purchase(
-        farmer_id=data.get('farmer_id'),
-        quantity=quantity,
-        unit_price=unit_price,
-        total_price=quantity * unit_price,
-        quality_level=data.get('quality_level'),
-        purchase_date=datetime.strptime(data.get('purchase_date'), '%Y-%m-%d') if data.get('purchase_date') else datetime.utcnow(),
-        notes=data.get('notes')
+    # Map old fields to new model, providing defaults for new required fields
+    price = float(data.get('unit_price', 0))
+    # The 'weight' in the new model is a string. The old 'quantity' was a float.
+    weight_str = str(data.get('quantity', 0))
+
+    # The 'date' in the new model is a string.
+    date_str = data.get('purchase_date', datetime.utcnow().strftime('%Y-%m-%d'))
+
+    acquisition = Acquisition(
+        herdsman_id=data.get('farmer_id'),
+        weight=weight_str,
+        price=price,
+        total_price=float(weight_str) * price,
+        date=date_str,
+        # Provide default values for new required fields not present in project1's frontend
+        initial_id=data.get('initial_id', f"proj1-{datetime.utcnow().timestamp()}"),
+        location=data.get('location', 'Unknown')
     )
-    db.session.add(purchase)
+    db.session.add(acquisition)
     db.session.commit()
-    return jsonify({'success': True, 'data': purchase.to_dict()}), 201
+    return jsonify({'success': True, 'data': acquisition.to_dict()}), 201
 
 @app.route('/api/purchases/<int:id>', methods=['PUT'])
 def update_purchase(id):
-    purchase = Purchase.query.get_or_404(id)
+    acquisition = Acquisition.query.get_or_404(id)
     data = request.get_json()
     
-    purchase.farmer_id = data.get('farmer_id', purchase.farmer_id)
-    purchase.quantity = float(data.get('quantity', purchase.quantity))
-    purchase.unit_price = float(data.get('unit_price', purchase.unit_price))
-    purchase.total_price = purchase.quantity * purchase.unit_price
-    purchase.quality_level = data.get('quality_level', purchase.quality_level)
-    if data.get('purchase_date'):
-        purchase.purchase_date = datetime.strptime(data.get('purchase_date'), '%Y-%m-%d')
-    purchase.notes = data.get('notes', purchase.notes)
+    acquisition.herdsman_id = data.get('farmer_id', acquisition.herdsman_id)
+    
+    # Handle weight (string) and price (float)
+    if 'quantity' in data:
+        acquisition.weight = str(data.get('quantity'))
+    if 'unit_price' in data:
+        acquisition.price = float(data.get('unit_price'))
+
+    # Recalculate total_price
+    acquisition.total_price = float(acquisition.weight) * acquisition.price
+
+    if 'purchase_date' in data:
+        acquisition.date = data.get('purchase_date')
+
+    # Update new fields if provided
+    acquisition.initial_id = data.get('initial_id', acquisition.initial_id)
+    acquisition.location = data.get('location', acquisition.location)
     
     db.session.commit()
-    return jsonify({'success': True, 'data': purchase.to_dict()})
+    return jsonify({'success': True, 'data': acquisition.to_dict()})
 
 @app.route('/api/purchases/<int:id>', methods=['DELETE'])
 def delete_purchase(id):
-    purchase = Purchase.query.get_or_404(id)
-    db.session.delete(purchase)
+    acquisition = Acquisition.query.get_or_404(id)
+    db.session.delete(acquisition)
     db.session.commit()
-    return jsonify({'success': True, 'message': '删除成功'})
+    return jsonify({'success': True, 'message': 'Delete successful'})
 
-# ==================== 统计接口 ====================
+# ==================== Stats API (Refactored) ====================
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
-    total_farmers = Farmer.query.count()
-    total_purchases = Purchase.query.count()
-    total_quantity = db.session.query(db.func.sum(Purchase.quantity)).scalar() or 0
-    total_amount = db.session.query(db.func.sum(Purchase.total_price)).scalar() or 0
+    total_farmers = Herdsman.query.count()
+    total_purchases = Acquisition.query.count()
+
+    # 'weight' is a string, so we must fetch all records and sum in Python
+    acquisitions = Acquisition.query.all()
+    total_quantity = sum(float(a.weight) for a in acquisitions if a.weight)
+    
+    # total_price can be summed in the DB
+    total_amount = db.session.query(db.func.sum(Acquisition.total_price)).scalar() or 0
     
     return jsonify({
         'success': True,
@@ -184,6 +201,3 @@ def get_stats():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-
-
-
