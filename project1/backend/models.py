@@ -51,7 +51,7 @@ class Acquisition(db.Model):
     __tablename__ = "acquisitions"
 
     id = db.Column(db.Integer, primary_key=True, index=True)
-    herdsman_id = db.Column(db.Integer, db.ForeignKey("herdsmen.id"), nullable=False)
+    herdsman_id = db.Column(db.Integer, db.ForeignKey("herdsmen.id"))
     initial_id = db.Column(db.String(255), nullable=False)
     weight = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Float, nullable=False)
